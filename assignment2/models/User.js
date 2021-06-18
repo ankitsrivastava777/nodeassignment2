@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-var { conn } = require('../config');
+var { conn } = require('../config/db');
 var usersprofile_schema = mongoose.Schema(
     {
         username: {

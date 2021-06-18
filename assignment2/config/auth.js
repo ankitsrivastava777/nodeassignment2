@@ -1,4 +1,5 @@
-var {conn, user} = require("../config");
+var {conn} = require("./db");
+var {user} = require("../models/User")
 
 var auth = async function authenticateToken(req, res, next) {
     var user_id = req.headers.token;
