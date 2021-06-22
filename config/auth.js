@@ -1,6 +1,3 @@
-var express = require("express");
-var passwordHash = require("password-hash");
-var app = express();
 const user = require('../models/User');
 
 var auth = async function authenticateToken(req, res, next) {

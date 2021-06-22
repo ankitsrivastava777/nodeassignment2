@@ -23,9 +23,9 @@ var usersprofile_schema = mongoose.Schema(
     },
     {
         strict: true,
-        collection: "newuserdata",
+        collection: "user_details",
     }
 );
-var user = conn.model("newuserdata", usersprofile_schema);
+var user = conn.model("user_details", usersprofile_schema);
 
 module.exports = user;

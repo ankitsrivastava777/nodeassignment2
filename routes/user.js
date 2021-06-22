@@ -1,6 +1,5 @@
 var express = require("express");
 var app = express();
-var bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 var { auth } = require("../config/auth");
 var { conn } = require("../config/db");
@@ -15,14 +14,18 @@ app.post("/user/register", async function (req, res) {
       message: "password not matched",
     });
   } else {
-    const user_post = new user({
+    const user_data = new user({
       username: req.body.username,
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
       password: userPassword,
       email: req.body.email,
     });
-    user_post.save(function (err, row) {
+    user_save.save(function (err, row) {
       if (err) {
-        console.log(err);
+        res.status(500).json({
+          message: err,
+        });
       } else {
         res.status(200).json({
           message: "user saved successfully",
@@ -32,9 +35,9 @@ app.post("/user/register", async function (req, res) {
   }
 });
 app.post("/user/login", async function (req, res) {
-  user.findOne({ username: req.body.username }, async function (err, results) {
-    var pass = results.password;
-    var userId = results._id;
+  user.findOne({ username: req.body.username }, async function (err, userDetails) {
+    var pass = userDetails.password;
+    var userId = userDetails._id;
     var input_password = pass.toString();
     var user_password = req.body.password;
     var tokenId = userId.toString();
@@ -65,22 +68,21 @@ app.put("/user/delete/", auth, async function (req, res) {
   });
 });
 
-app.get("/user/list/:id/:page", function (req, res) {
-  page = Number(req.params.page);
-  if (req.params.id == 1) {
+app.get("/user/list/:users/:page", function (req, res) {
+  pages_number = Number(req.params.page);
+  if (req.params.users == 1) {
     skip = 0;
   } else {
-    var skip = req.params.id * 10 - 10;
+    var skip_user_list = req.params.users * 10 - 10;
   }
   user
     .find()
-    .skip(skip)
-    .limit(page)
-    .exec(function (err, result) {
+    .skip(skip_user_list)
+    .limit(pages_number)
+    .exec(function (err, userData) {
       if (err) {
-        res.send(err);
-      }
-      res.send(result);
+        res.status(500).json({ message: "no data found", })      }
+      res.send(userData);
     });
 });
 
