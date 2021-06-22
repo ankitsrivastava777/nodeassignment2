@@ -6,6 +6,12 @@ var usersprofile_schema = mongoose.Schema(
             type: String,
             required: true,
         },
+        firstname: {
+            type: String
+        },
+        lastname: {
+            type: String
+        },
         password: {
             type: String,
             required: true,
