@@ -35,19 +35,22 @@ app.post("/user/register", async function (req, res) {
   }
 });
 app.post("/user/login", async function (req, res) {
-  user.findOne({ username: req.body.username }, async function (err, userDetails) {
-    var pass = userDetails.password;
-    var userId = userDetails._id;
-    var input_password = pass.toString();
-    var user_password = req.body.password;
-    var tokenId = userId.toString();
-    if (await bcrypt.compare(user_password, input_password)) {
-      res.header("token", tokenId);
-      res.status(200).json({ token: tokenId });
-    } else {
-      res.status(500).send("password not match");
+  user.findOne(
+    { username: req.body.username },
+    async function (err, userDetails) {
+      var pass = userDetails.password;
+      var userId = userDetails._id;
+      var input_password = pass.toString();
+      var user_password = req.body.password;
+      var tokenId = userId.toString();
+      if (await bcrypt.compare(user_password, input_password)) {
+        res.header("token", tokenId);
+        res.status(200).json({ token: tokenId });
+      } else {
+        res.status(500).json({ message: "password not match" });
+      }
     }
-  });
+  );
 });
 
 app.get("/user/get", auth, async function (req, res) {
@@ -62,9 +65,9 @@ app.put("/user/delete/", auth, async function (req, res) {
   var user_id = req.user.id;
   await user.deleteOne({ _id: user_id }, function (err, results) {
     if (err) {
-      res.status(501).send("no user mathch");
+      res.status(501).json({ message: "no data found" });
     }
-    res.status(200).send("user deleted");
+    res.status(200).json({ message: "user deleted" });
   });
 });
 
@@ -81,7 +84,8 @@ app.get("/user/list/:users/:page", function (req, res) {
     .limit(pages_number)
     .exec(function (err, userData) {
       if (err) {
-        res.status(500).json({ message: "no data found", })      }
+        res.status(500).json({ message: "no data found" });
+      }
       res.send(userData);
     });
 });
